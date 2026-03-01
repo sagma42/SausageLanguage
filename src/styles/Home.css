@@ -1,0 +1,76 @@
+.home {
+  padding: 6rem 1rem 2rem; /* account for fixed navbar */
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: #34495e;
+}
+
+.search-box {
+  margin: 1.5rem 0;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  font-size: 1.1rem;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.search-box input::placeholder {
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters button {
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 20px;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.filters button:hover {
+  background: #dfe6e9;
+}
+
+.filters button.active {
+  background: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+  transform: scale(1.05);
+}
+
+.word-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: start; /* prevent cards stretching to same height */
+}
+
+.discord-link {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.discord-link img {
+  width: 40px;
+}
