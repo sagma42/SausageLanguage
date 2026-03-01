@@ -1,10 +1,15 @@
 import React, { createContext, useState, useEffect } from 'react';
 import {
   subscribeToWords,
+  subscribeToEkler,
   addWordToFirestore,
   removeWordFromFirestore,
   updateWordInFirestore,
   likeWordInFirestore,
+  addEklerToFirestore,
+  removeEklerFromFirestore,
+  updateEklerInFirestore,
+  likeEklerInFirestore,
   getDeviceId,
   getUserPreferences,
   setUserPreference,
@@ -14,17 +19,22 @@ export const WordContext = createContext();
 
 export function WordProvider({ children }) {
   const [words, setWords] = useState([]);
+  const [ekler, setEkler] = useState([]);
   const [likedWords, setLikedWords] = useState([]);
   const [savedWords, setSavedWords] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const deviceId = getDeviceId();
 
-  // Subscribe to words in real-time
+  // Subscribe to words and ekler in real-time
   useEffect(() => {
-    const unsubscribe = subscribeToWords((wordsList) => {
+    const unsubscribeWords = subscribeToWords((wordsList) => {
       setWords(wordsList);
       setLoading(false);
+    });
+
+    const unsubscribeEkler = subscribeToEkler((eklerList) => {
+      setEkler(eklerList);
     });
 
     // Load user preferences
@@ -35,7 +45,10 @@ export function WordProvider({ children }) {
     };
     loadPreferences();
 
-    return unsubscribe;
+    return () => {
+      unsubscribeWords();
+      unsubscribeEkler();
+    };
   }, [deviceId]);
 
   const addWord = async (main, lang2, lang3, description) => {
@@ -97,6 +110,36 @@ export function WordProvider({ children }) {
     }
   };
 
+  const addEkler = async (main, lang2, lang3, description) => {
+    try {
+      await addEklerToFirestore(main, lang2, lang3, description);
+    } catch (error) {
+      console.error('Error adding ek:', error);
+    }
+  };
+
+  const removeEkler = async (id) => {
+    try {
+      await removeEklerFromFirestore(id);
+      const newLiked = likedWords.filter((x) => x !== id);
+      const newSaved = savedWords.filter((x) => x !== id);
+      setLikedWords(newLiked);
+      setSavedWords(newSaved);
+      await setUserPreference(deviceId, 'liked', newLiked);
+      await setUserPreference(deviceId, 'saved', newSaved);
+    } catch (error) {
+      console.error('Error removing ek:', error);
+    }
+  };
+
+  const updateEkler = async (id, main, lang2, lang3, description) => {
+    try {
+      await updateEklerInFirestore(id, main, lang2, lang3, description);
+    } catch (error) {
+      console.error('Error updating ek:', error);
+    }
+  };
+
   const value = {
     words,
     addWord,
@@ -104,6 +147,10 @@ export function WordProvider({ children }) {
     updateWord,
     likeWord,
     toggleSaveWord,
+    ekler,
+    addEkler,
+    removeEkler,
+    updateEkler,
     likedWords,
     savedWords,
     loading,

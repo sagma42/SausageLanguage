@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Ekler from './pages/Ekler';
 import Admin from './pages/Admin';
 import { WordProvider } from './contexts/WordContext';
 
@@ -12,6 +13,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/ekler" element={<Ekler />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>

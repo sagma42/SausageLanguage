@@ -6,7 +6,7 @@ import { hashString } from '../utils/authUtils';
 import { getAdminCreds, setAdminCreds, resetAdminCreds } from '../services/firebase';
 
 function Admin() {
-  const { addWord, words, removeWord, updateWord } = useContext(WordContext);
+  const { addWord, words, removeWord, updateWord, addEkler, ekler, removeEkler, updateEkler } = useContext(WordContext);
   const [adminId, setAdminId] = useState('');
   const navigate = useNavigate();
 
@@ -14,6 +14,7 @@ function Admin() {
     return localStorage.getItem('adminLogged') === 'true';
   });
   const [setupMode, setSetupMode] = useState(false);
+  const [tab, setTab] = useState('words'); // 'words' or 'ekler'
 
   useEffect(() => {
     // check firestore for credentials
@@ -79,11 +80,20 @@ function Admin() {
 
   const handleAdd = (e) => {
     e.preventDefault();
-    if (editingId) {
-      updateWord(editingId, form.main, form.lang2, form.lang3, form.description);
-      setEditingId(null);
+    if (tab === 'words') {
+      if (editingId) {
+        updateWord(editingId, form.main, form.lang2, form.lang3, form.description);
+        setEditingId(null);
+      } else {
+        addWord(form.main, form.lang2, form.lang3, form.description);
+      }
     } else {
-      addWord(form.main, form.lang2, form.lang3, form.description);
+      if (editingId) {
+        updateEkler(editingId, form.main, form.lang2, form.lang3, form.description);
+        setEditingId(null);
+      } else {
+        addEkler(form.main, form.lang2, form.lang3, form.description);
+      }
     }
     setForm({ main: '', lang2: '', lang3: '', description: '' });
   };
@@ -178,7 +188,29 @@ function Admin() {
     <div className="admin-page">
       <div style={{ textAlign: 'right' }}>
       </div>
-      <h2>{editingId ? 'Edit Word' : 'Add Words'}</h2>
+      <div className="admin-tabs">
+        <button 
+          className={tab === 'words' ? 'tab-active' : ''} 
+          onClick={() => {
+            setTab('words');
+            setEditingId(null);
+            setForm({ main: '', lang2: '', lang3: '', description: '' });
+          }}
+        >
+          Words
+        </button>
+        <button 
+          className={tab === 'ekler' ? 'tab-active' : ''} 
+          onClick={() => {
+            setTab('ekler');
+            setEditingId(null);
+            setForm({ main: '', lang2: '', lang3: '', description: '' });
+          }}
+        >
+          Ekler
+        </button>
+      </div>
+      <h2>{editingId ? `Edit ${tab === 'words' ? 'Word' : 'Ek'}` : `Add ${tab === 'words' ? 'Words' : 'Ekler'}`}</h2>
       <form onSubmit={handleAdd} className="word-form">
         <input
           placeholder="Main language"
@@ -203,7 +235,7 @@ function Admin() {
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
-        <button type="submit">{editingId ? 'Update word' : 'Add word'}</button>
+        <button type="submit">{editingId ? `Update ${tab === 'words' ? 'word' : 'ek'}` : `Add ${tab === 'words' ? 'word' : 'ek'}`}</button>
         {editingId && (
           <button
             type="button"
@@ -217,16 +249,26 @@ function Admin() {
         )}
       </form>
 
-      {/* word list for admin with edit and delete buttons */}
+      {/* List for admin with edit and delete buttons */}
       <div className="admin-list">
-        <h3>Existing words</h3>
-        {words.length === 0 && <p>No words yet.</p>}
-        {words.map((w) => (
+        <h3>Existing {tab === 'words' ? 'words' : 'ekler'}</h3>
+        {tab === 'words' && words.length === 0 && <p>No words yet.</p>}
+        {tab === 'ekler' && ekler.length === 0 && <p>No ekler yet.</p>}
+        {tab === 'words' && words.map((w) => (
           <div key={w.id} className="admin-word">
             <span>{w.main} / {w.lang2} / {w.lang3}</span>
             <div className="admin-actions">
               <button onClick={() => handleEdit(w)} className="edit-btn">Edit</button>
               <button onClick={() => removeWord(w.id)} className="delete-btn">Delete</button>
+            </div>
+          </div>
+        ))}
+        {tab === 'ekler' && ekler.map((e) => (
+          <div key={e.id} className="admin-word">
+            <span>{e.main} / {e.lang2} / {e.lang3}</span>
+            <div className="admin-actions">
+              <button onClick={() => handleEdit(e)} className="edit-btn">Edit</button>
+              <button onClick={() => removeEkler(e.id)} className="delete-btn">Delete</button>
             </div>
           </div>
         ))}

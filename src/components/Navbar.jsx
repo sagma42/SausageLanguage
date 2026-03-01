@@ -17,9 +17,12 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="home-link">
-        Home
-      </Link>
+      <div className="left">
+        <Link to="/" className="home-link">
+          Ana Sayfa
+        </Link>
+        <Link to="/ekler">Ekler</Link>
+      </div>
       <div className="right">
         {isLogged ? (
           <>

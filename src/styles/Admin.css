@@ -10,6 +10,33 @@
   color: #2c3e50;
 }
 
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.admin-tabs button {
+  background: transparent;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+  border-bottom: 3px solid transparent;
+}
+
+.admin-tabs button.tab-active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+}
+
+.admin-tabs button:hover {
+  color: #2c3e50;
+}
+
 .login-form,
 .word-form {
   display: flex;

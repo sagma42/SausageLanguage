@@ -3,20 +3,21 @@ import { WordContext } from '../contexts/WordContext';
 import WordItem from '../components/WordItem';
 import '../styles/Home.css';
 
-function Home() {
-  const { words, savedWords, loading } = useContext(WordContext);  const [search, setSearch] = useState('');
+function Ekler() {
+  const { ekler, savedWords, loading } = useContext(WordContext);
+  const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('new-old');
 
   const filtered = useMemo(() => {
-    let list = [...words];
+    let list = [...ekler];
     if (search) {
       const s = search.toLowerCase();
       list = list.filter(
-        (w) =>
-          w.main.toLowerCase().includes(s) ||
-          w.lang2.toLowerCase().includes(s) ||
-          w.lang3.toLowerCase().includes(s) ||
-          (w.description && w.description.toLowerCase().includes(s))
+        (e) =>
+          e.main.toLowerCase().includes(s) ||
+          e.lang2.toLowerCase().includes(s) ||
+          e.lang3.toLowerCase().includes(s) ||
+          (e.description && e.description.toLowerCase().includes(s))
       );
     }
     switch (filter) {
@@ -30,7 +31,7 @@ function Home() {
         list.sort((a, b) => b.likes - a.likes);
         break;
       case 'saved':
-        list = list.filter((w) => savedWords.includes(w.id));
+        list = list.filter((e) => savedWords.includes(e.id));
         break;
       case 'random':
         list.sort(() => Math.random() - 0.5);
@@ -39,15 +40,15 @@ function Home() {
         break;
     }
     return list;
-  }, [words, search, filter, savedWords]);
+  }, [ekler, search, filter, savedWords]);
 
   return (
     <div className="home">
-      <h1 className="title">Ana Sayfa</h1>
+      <h1 className="title">Ekler</h1>
       <div className="search-box">
         <input
           type="text"
-          placeholder="Sosis Dili ve Edebiyatı"
+          placeholder="Ekler'i ara..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -70,11 +71,11 @@ function Home() {
         ))}
       </div>
       <div className="word-list">
-        {loading && <p>Loading words...</p>}
-        {!loading && filtered.map((w) => (
-          <WordItem key={w.id} word={w} />
+        {loading && <p>Loading ekler...</p>}
+        {!loading && filtered.map((e) => (
+          <WordItem key={e.id} word={e} />
         ))}
-        {!loading && filtered.length === 0 && <p>No words found.</p>}
+        {!loading && filtered.length === 0 && <p>No ekler found.</p>}
       </div>
       <a
         className="discord-link"
@@ -92,4 +93,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Ekler;

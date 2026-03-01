@@ -53,6 +53,19 @@ export const subscribeToWords = (callback) => {
   return unsubscribe;
 };
 
+// Helper to subscribe to ekler collection in real-time
+export const subscribeToEkler = (callback) => {
+  const q = query(collection(db, 'ekler'));
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const eklerList = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(eklerList);
+  });
+  return unsubscribe;
+};
+
 // Add a word to Firestore
 export const addWordToFirestore = async (main, lang2, lang3, description) => {
   const docRef = await addDoc(collection(db, 'words'), {
@@ -88,6 +101,44 @@ export const likeWordInFirestore = async (wordId) => {
   if (wordSnap.exists()) {
     const currentLikes = wordSnap.data().likes || 0;
     await updateDoc(wordDocRef, { likes: currentLikes + 1 });
+  }
+};
+
+// Add an ek to Firestore
+export const addEklerToFirestore = async (main, lang2, lang3, description) => {
+  const docRef = await addDoc(collection(db, 'ekler'), {
+    main,
+    lang2,
+    lang3,
+    description,
+    createdAt: Date.now(),
+    likes: 0,
+  });
+  return docRef.id;
+};
+
+// Remove an ek from Firestore
+export const removeEklerFromFirestore = async (id) => {
+  await deleteDoc(doc(db, 'ekler', id));
+};
+
+// Update an ek in Firestore
+export const updateEklerInFirestore = async (id, main, lang2, lang3, description) => {
+  await updateDoc(doc(db, 'ekler', id), {
+    main,
+    lang2,
+    lang3,
+    description,
+  });
+};
+
+// Like an ek
+export const likeEklerInFirestore = async (eklerId) => {
+  const eklerDocRef = doc(db, 'ekler', eklerId);
+  const eklerSnap = await getDoc(eklerDocRef);
+  if (eklerSnap.exists()) {
+    const currentLikes = eklerSnap.data().likes || 0;
+    await updateDoc(eklerDocRef, { likes: currentLikes + 1 });
   }
 };
 

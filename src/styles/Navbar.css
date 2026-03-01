@@ -22,6 +22,15 @@
 .navbar a:hover {
   color: #f1c40f;
 }
+.navbar .left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.navbar .left a {
+  font-weight: bold;
+  font-size: 1.3rem;
+}
 .navbar .home-link {
   font-weight: bold;
   font-size: 1.3rem;
